@@ -1,23 +1,28 @@
-import { createClient } from 'redis'
+import Redis from "ioredis";
 
-
-export const redis = createClient({
-    // url : process.env.REDIS_URL!,
-   url: "redis://redis:6379"
+// --------------------------------------
+// Create Redis Cluster Client
+// --------------------------------------
+export const redis = new Redis.Cluster([
+  { host: "redis-node-1", port: 6379 },
+  { host: "redis-node-2", port: 6379 },
+  { host: "redis-node-3", port: 6379 },
+  { host: "redis-node-4", port: 6379 },
+  { host: "redis-node-5", port: 6379 },
+  { host: "redis-node-6", port: 6379 }
+], {
+  redisOptions: {
+  
+  }
 });
 
-redis.on("connect",()=>{
-    console.log("Redis client connected");
 
+redis.on("connect", () => {
+  console.log("✅ Redis Cluster connected");
 });
-
 
 redis.on("error", (err) => {
-  console.error(" Redis error:", err);
+  console.error("❌ Redis Cluster error:", err);
 });
 
-export async function redisClient() {
-  if (!redis.isOpen) {
-    await redis.connect();
-  }
-}
+export default redis;

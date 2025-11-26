@@ -1,31 +1,177 @@
+# services:
+#   ratelimiterapi:       
+#     build: ./backend
+#     container_name: ratelimiterapi 
+#     ports:
+#       - "3000:3000"
+#     env_file:
+#       - ./backend/.env
+#     depends_on:
+#       - redis
+#     restart: always
+#     networks:
+#       - backend
+
+#   redis-node-1:
+#     image: redis:7-alpine
+#     container_name: redis-node-1
+#     command: ["redis-server" ,"./redis.config"]
+    
+#     ports:
+#       - "5001:6379"
+#     volumes:
+#       - redis-data:/data
+#     restart: always
+#     networks:
+#       - backend
+
+#   redis-node-2:
+#     image: redis:7-alpine
+#     container_name: redis-node-2
+#     command: ["redis-server" ,"./redis.config"]
+    
+#     ports:
+#       - "5002:6379"
+#     volumes:
+#       - redis-data:/data
+#     restart: always
+#     networks:
+#       - backend
+      
+#   redis-node-3:
+#     image: redis:7-alpine
+#     container_name: redis-node-3
+#     command: ["redis-server" ,"./redis.config"]
+    
+#     ports:
+#       - "5003:6379"
+#     volumes:
+#       - redis-data:/data
+#     restart: always
+#     networks:
+#       - backend
+
+
+#   redis-node-4:
+#     image: redis:7-alpine
+#     container_name: redis-node-4
+#     command: ["redis-server" ,"./redis.config"]
+    
+#     ports:
+#       - "5004:6379"
+#     volumes:
+#       - redis-data:/data
+#     restart: always
+#     networks:
+#       - backend
+
+
+# networks:
+#   backend:
+#     driver: bridge
 services:
-  ratelimiterapi:        # <-- lowercase
+  ratelimiterapi:
     build: ./backend
-    container_name: ratelimiterapi   # <-- lowercase recommended
+    container_name: ratelimiterapi
     ports:
       - "3000:3000"
     env_file:
       - ./backend/.env
     depends_on:
-      - redis
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+      - redis-node-6
     restart: always
     networks:
-      - backend
+      - redisnet
 
-  redis:
+  redis-node-1:
     image: redis:7-alpine
-    container_name: redisforratelimiter
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
     ports:
-      - "6379:6379"
-    volumes:
-      - redis-data:/data
-    restart: always
+      - "5001:6379"       
+      - "15001:16379"     
     networks:
-      - backend
+      - redisnet
 
-volumes:
-  redis-data:
+  redis-node-2:
+    image: redis:7-alpine
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+    ports:
+      - "5002:6379"
+      - "15002:16379"
+    networks:
+      - redisnet
+
+  redis-node-3:
+    image: redis:7-alpine
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+    ports:
+      - "5003:6379"
+      - "15003:16379"
+    networks:
+      - redisnet
+
+  redis-node-4:
+    image: redis:7-alpine
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+    ports:
+      - "5004:6379"
+      - "15004:16379"
+    networks:
+      - redisnet
+
+  redis-node-5:
+    image: redis:7-alpine
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+    ports:
+      - "5005:6379"
+      - "15005:16379"
+    networks:
+      - redisnet
+
+  redis-node-6:
+    image: redis:7-alpine
+    command: >
+      redis-server --port 6379
+      --cluster-enabled yes
+      --cluster-config-file nodes.conf
+      --cluster-node-timeout 5000
+      --appendonly yes
+    ports:
+      - "5006:6379"
+      - "15006:16379"
+    networks:
+      - redisnet
 
 networks:
-  backend:
+  redisnet:
     driver: bridge

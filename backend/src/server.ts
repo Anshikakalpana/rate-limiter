@@ -1,12 +1,12 @@
 import app from './app.js';
-import  { redisClient } from './utils/redis.js';
+import redis from './utils/redis.js';
 
-// const PORT = process.env.PORT || 3000;
+
 const PORT =  3000;
 async function startServer() {
   try {
    
-    await redisClient();
+   
     console.log(' Redis connected');
 
   

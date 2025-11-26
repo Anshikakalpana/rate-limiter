@@ -1,8 +1,8 @@
 import type { Result } from "../types/index.js";
 
-import  {redis , redisClient} from "../utils/redis.js";
+import  {redis} from "../utils/redis.js";
 
-await redisClient();
+
 
 
 export async function fixedWindowAlgorithm(
@@ -14,7 +14,7 @@ export async function fixedWindowAlgorithm(
 
     const currentTime = Math.floor(Date.now() / 1000);
 const windowStartTime =  Math.floor(currentTime / windowSize) * windowSize;
-const redisKey = `fixed_window:${key}:${windowStartTime}`;
+const redisKey = `fixed_window:{${key}}:${windowStartTime}`;
 const currentCount = await redis.get(redisKey);
 const count = currentCount ? parseInt(currentCount) : 0;
 if(count>=limit){
