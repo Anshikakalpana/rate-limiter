@@ -1,8 +1,6 @@
 import Redis from "ioredis";
 
-// --------------------------------------
-// Create Redis Cluster Client
-// --------------------------------------
+
 export const redis = new Redis.Cluster([
   { host: "redis-node-1", port: 6379 },
   { host: "redis-node-2", port: 6379 },
@@ -18,11 +16,11 @@ export const redis = new Redis.Cluster([
 
 
 redis.on("connect", () => {
-  console.log("✅ Redis Cluster connected");
+  console.log(" Redis Cluster connected");
 });
 
 redis.on("error", (err) => {
-  console.error("❌ Redis Cluster error:", err);
+  console.error(" Redis Cluster error:", err);
 });
 
 export default redis;
