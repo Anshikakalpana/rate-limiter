@@ -7,7 +7,7 @@ import { tokenBucketAlgorithm } from '../algorithms/tokenBucket.js';
 export async function fixedwindowalgo(req: Request, res: Response) {
   try {
    
-    const { key, tokensRequested } = req.body as CustomRequest;
+    const { key } = req.body as CustomRequest;
 
     const result = await fixedWindowAlgorithm(key,  10, 60);
 
@@ -31,7 +31,7 @@ export async function fixedwindowalgo(req: Request, res: Response) {
 
 export async function slidingWindowAlgo(req:Request , res:Response){
   try{
- const { key, tokensRequested } = req.body as CustomRequest;
+ const { key } = req.body as CustomRequest;
    const result = await slidingWindowAlgorithm(key,  10, 60);
 
    
@@ -56,8 +56,11 @@ export async function slidingWindowAlgo(req:Request , res:Response){
 export async function tokenBucketAlgo(req:Request , res: Response){
 
   try{
-     const { key, tokensRequested } = req.body as CustomRequest;
-  const result = await tokenBucketAlgorithm(key,  10,5);
+  const { key, tokensRequested } = req.body as CustomRequest;
+  console.log("BODY RECEIVED:", req.body);
+
+const result = await tokenBucketAlgorithm(key, 10, 5, tokensRequested);
+
 
    
     const statusCode = result.allowed ? 200 : 429;

@@ -4,8 +4,8 @@ import { redis } from "../utils/redis.js";
 export async function tokenBucketAlgorithm(
   key: string,
   limit: number,
-  refillRate: number,   
-  tokensRequested = 1   
+  refillRatePerSecond: number,   
+  tokensRequested:number,   
 ): Promise<Result> {
   try {
     const redisKey = `token_bucket:{${key}}`;
@@ -21,7 +21,7 @@ export async function tokenBucketAlgorithm(
     let currentCount: number = currentCountStr ? parseInt(currentCountStr) : limit;
 
     const elapsed = currentTime - lastRefillTime;
-    const tokensToAdd = Math.floor(elapsed * refillRate);
+    const tokensToAdd = Math.floor(elapsed * refillRatePerSecond);
     currentCount = Math.min(limit, currentCount + tokensToAdd);
 
   
@@ -29,7 +29,7 @@ export async function tokenBucketAlgorithm(
       return {
         allowed: false,
         tokensRemaining: currentCount,
-        retryAfterTime: Math.ceil((tokensRequested - currentCount) / refillRate),
+        retryAfterTime: Math.ceil((tokensRequested - currentCount) / refillRatePerSecond),
       };
     }
 
