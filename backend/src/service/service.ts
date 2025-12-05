@@ -4,12 +4,14 @@ import type { Request as CustomRequest } from '../types/index.js';
 import { fixedWindowAlgorithm } from '../algorithms/fixedWindow.js';
 import { slidingWindowAlgorithm } from '../algorithms/slidingWindow.js';
 import { tokenBucketAlgorithm } from '../algorithms/tokenBucket.js';
+
+
 export async function fixedwindowalgo(req: Request, res: Response) {
   try {
    
-    const { key } = req.body as CustomRequest;
+    const { key , limit , windowSize } = req.body as CustomRequest;
 
-    const result = await fixedWindowAlgorithm(key,  10, 60);
+    const result = await fixedWindowAlgorithm(key,  limit, windowSize);
 
    
     const statusCode = result.allowed ? 200 : 429;
@@ -24,15 +26,15 @@ export async function fixedwindowalgo(req: Request, res: Response) {
     console.error('Service Error:', err);
     return res.status(500).json({
       error: 'Internal server error',
-      message: err instanceof Error ? err.message : 'Unknown error',
+    
     });
   }
 }
 
 export async function slidingWindowAlgo(req:Request , res:Response){
   try{
- const { key } = req.body as CustomRequest;
-   const result = await slidingWindowAlgorithm(key,  10, 60);
+ const { key , limit , windowSize } = req.body as CustomRequest;
+   const result = await slidingWindowAlgorithm(key,  limit, windowSize);
 
    
     const statusCode = result.allowed ? 200 : 429;
@@ -47,7 +49,7 @@ export async function slidingWindowAlgo(req:Request , res:Response){
     console.error('Service Error:', err);
     return res.status(500).json({
       error: 'Internal server error',
-      message: err instanceof Error ? err.message : 'Unknown error',
+   
     });
   }
 }
@@ -56,10 +58,11 @@ export async function slidingWindowAlgo(req:Request , res:Response){
 export async function tokenBucketAlgo(req:Request , res: Response){
 
   try{
-  const { key, tokensRequested } = req.body as CustomRequest;
+  const { key,limit ,refillRatePerSecond, tokensRequested } = req.body as CustomRequest;
+
   console.log("BODY RECEIVED:", req.body);
 
-const result = await tokenBucketAlgorithm(key, 10, 5, tokensRequested);
+const result = await tokenBucketAlgorithm(key, limit, refillRatePerSecond, tokensRequested);
 
 
    
@@ -75,7 +78,7 @@ const result = await tokenBucketAlgorithm(key, 10, 5, tokensRequested);
     console.error('Service Error:', err);
     return res.status(500).json({
       error: 'Internal server error',
-      message: err instanceof Error ? err.message : 'Unknown error',
+      
     });
   }
 }

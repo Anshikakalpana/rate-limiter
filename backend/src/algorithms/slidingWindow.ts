@@ -10,7 +10,8 @@ export async function slidingWindowAlgorithm(
     const now = Math.floor(Date.now() / 1000);
     const windowStart = now - windowSize;
     const redisKey = `sliding_log:{${key}}`;
-
+ const statsKey= `stats:{${key}}`;
+     const globalStatsKey = `stats:global`;
 
     await redis.zremrangebyscore(redisKey, 0, windowStart);
 
@@ -19,6 +20,12 @@ export async function slidingWindowAlgorithm(
 
  
     if (count >= limit) {
+
+          await redis.hincrby(statsKey, 'blocked', 1);
+    await redis.hincrby(statsKey, 'total', 1);
+    await redis.hincrby(globalStatsKey, 'blocked', 1);
+    await redis.hincrby(globalStatsKey, 'total', 1);
+ 
       const oldest = await redis.zrange(redisKey, 0, 0, "WITHSCORES");
 
       const oldestTimestamp =
@@ -35,7 +42,10 @@ export async function slidingWindowAlgorithm(
       };
     }
 
-  
+          await redis.hincrby(statsKey, 'allowed', 1);
+    await redis.hincrby(statsKey, 'total', 1);
+    await redis.hincrby(globalStatsKey, 'allowed', 1);
+    await redis.hincrby(globalStatsKey, 'total', 1);
     await redis.zadd(redisKey, now, `${now}`);
 
   

@@ -11,6 +11,8 @@ export async function tokenBucketAlgorithm(
     const redisKey = `token_bucket:{${key}}`;
     const lastRefillKey = `${redisKey}:last_refill`;
     const currentTime = Math.floor(Date.now() / 1000);
+    const statsKey= `stats:${key}`;
+     const globalStatsKey = `stats:global`;
 
   
     const lastRefill = await redis.get(lastRefillKey);
@@ -26,8 +28,14 @@ export async function tokenBucketAlgorithm(
 
   
     if (currentCount < tokensRequested) {
+      await redis.hincrby(statsKey, 'blocked', 1);
+      await redis.hincrby(statsKey, 'total', 1);
+      await redis.hincrby(globalStatsKey, 'blocked', 1);
+      await redis.hincrby(globalStatsKey, 'total', 1);
+     await redis.hincrby(globalStatsKey, 'total', 1);
       return {
         allowed: false,
+      
         tokensRemaining: currentCount,
         retryAfterTime: Math.ceil((tokensRequested - currentCount) / refillRatePerSecond),
       };
@@ -35,7 +43,10 @@ export async function tokenBucketAlgorithm(
 
   
     currentCount -= tokensRequested;
-
+    await redis.hincrby(statsKey, 'allowed', 1);
+    await redis.hincrby(statsKey, 'total', 1);
+    await redis.hincrby(globalStatsKey, 'allowed', 1);
+    await redis.hincrby(globalStatsKey, 'total', 1);
  
     await redis.set(redisKey, currentCount);
     await redis.set(lastRefillKey, currentTime.toString());
@@ -52,3 +63,5 @@ export async function tokenBucketAlgorithm(
     };
   }
 }
+
+
