@@ -4,7 +4,7 @@ import type { Request as CustomRequest } from '../types/index.js';
 import { fixedWindowAlgorithm } from '../algorithms/fixedWindow.js';
 import { slidingWindowAlgorithm } from '../algorithms/slidingWindow.js';
 import { tokenBucketAlgorithm } from '../algorithms/tokenBucket.js';
-
+import { leakyBucketAlgorithm } from '../algorithms/leakyBucket.js';
 
 export async function fixedwindowalgo(req: Request, res: Response) {
   try {
@@ -81,4 +81,31 @@ const result = await tokenBucketAlgorithm(key, limit, refillRatePerSecond, token
       
     });
   }
+}
+
+export async function leakyBucketAlgo(req:Request , res: Response){
+
+  try{
+    const {key , capacity , leakRatePerSecond, tokensRequested} = req.body as CustomRequest;
+    const result = await leakyBucketAlgorithm(key, capacity, leakRatePerSecond, tokensRequested);
+
+
+    const statusCode = result.allowed ? 200 : 429;
+
+    return res.status(statusCode).json({
+      ...result,
+      algorithm: 'leaky bucket',
+      timestamp: Date.now(),
+    });
+
+
+  }catch(err){
+    console.error('Service Error:', err);
+    return res.status(500).json({
+      error: 'Internal server error',
+
+  });
+
+
+}
 }

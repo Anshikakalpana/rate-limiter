@@ -11,8 +11,9 @@ export async function tokenBucketAlgorithm(
     const redisKey = `token_bucket:{${key}}`;
     const lastRefillKey = `${redisKey}:last_refill`;
     const currentTime = Math.floor(Date.now() / 1000);
-    const statsKey= `stats:${key}`;
-     const globalStatsKey = `stats:global`;
+    const statsKey = `stats:{${key}}`;          // per-user stats
+const globalStatsKey = `stats:{global}`;   // global stats
+
 
   
     const lastRefill = await redis.get(lastRefillKey);
@@ -28,23 +29,28 @@ export async function tokenBucketAlgorithm(
 
   
     if (currentCount < tokensRequested) {
-      await redis.hincrby(statsKey, 'blocked', 1);
-      await redis.hincrby(statsKey, 'total', 1);
+    let blocked=  await redis.hincrby(statsKey, 'blocked', 1);
+     let total= await redis.hincrby(statsKey, 'total', 1);
       await redis.hincrby(globalStatsKey, 'blocked', 1);
       await redis.hincrby(globalStatsKey, 'total', 1);
-     await redis.hincrby(globalStatsKey, 'total', 1);
+ 
       return {
-        allowed: false,
-      
-        tokensRemaining: currentCount,
+         allowed:false,
+        algorithmName: 'token_bucket',
+         tokensRemaining:currentCount,
+   
+       // result stats per key
+         blockedRequests: blocked,
+         totalRequests:total,
+         allowedRequests:total - blocked,
         retryAfterTime: Math.ceil((tokensRequested - currentCount) / refillRatePerSecond),
       };
     }
 
   
     currentCount -= tokensRequested;
-    await redis.hincrby(statsKey, 'allowed', 1);
-    await redis.hincrby(statsKey, 'total', 1);
+    let allowed=await redis.hincrby(statsKey, 'allowed', 1);
+    let total= await redis.hincrby(statsKey, 'total', 1);
     await redis.hincrby(globalStatsKey, 'allowed', 1);
     await redis.hincrby(globalStatsKey, 'total', 1);
  
@@ -52,14 +58,25 @@ export async function tokenBucketAlgorithm(
     await redis.set(lastRefillKey, currentTime.toString());
 
     return {
-      allowed: true,
-      tokensRemaining: currentCount,
+       allowed: true,
+        algorithmName: 'token_bucket',
+       tokensRemaining: currentCount,
+     
+     // result stats per key
+       blockedRequests: total - allowed,
+       totalRequests: total,
+       allowedRequests: allowed,
     };
   } catch (err) {
-    console.error("Token Bucket Error:", err);
-    return {
-      allowed: true,
-      tokensRemaining: limit,
+  console.error("Token Bucket Error:", err);
+
+  return {
+    allowed: true,
+     algorithmName: 'token_bucket',
+    tokensRemaining: limit,
+    blockedRequests: 0,
+    totalRequests: 0,
+    allowedRequests: 0,
     };
   }
 }

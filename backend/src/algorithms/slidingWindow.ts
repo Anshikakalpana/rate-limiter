@@ -10,8 +10,9 @@ export async function slidingWindowAlgorithm(
     const now = Math.floor(Date.now() / 1000);
     const windowStart = now - windowSize;
     const redisKey = `sliding_log:{${key}}`;
- const statsKey= `stats:{${key}}`;
-     const globalStatsKey = `stats:global`;
+const statsKey = `stats:{${key}}`;          // per-user stats
+const globalStatsKey = `stats:{global}`;   // global stats
+
 
     await redis.zremrangebyscore(redisKey, 0, windowStart);
 
@@ -21,10 +22,10 @@ export async function slidingWindowAlgorithm(
  
     if (count >= limit) {
 
-          await redis.hincrby(statsKey, 'blocked', 1);
-    await redis.hincrby(statsKey, 'total', 1);
-    await redis.hincrby(globalStatsKey, 'blocked', 1);
-    await redis.hincrby(globalStatsKey, 'total', 1);
+      let blocked=  await redis.hincrby(statsKey, 'blocked', 1);
+     let total= await redis.hincrby(statsKey, 'total', 1);
+      await redis.hincrby(globalStatsKey, 'blocked', 1);
+      await redis.hincrby(globalStatsKey, 'total', 1);
  
       const oldest = await redis.zrange(redisKey, 0, 0, "WITHSCORES");
 
@@ -36,14 +37,20 @@ export async function slidingWindowAlgorithm(
 
       return {
         allowed: false,
-        tokensRemaining: 0,
-        resetTime,
+           
+        algorithmName: 'sliding_window',
+         tokensRemaining: limit - count - 1,
+   
+       // result stats per key
+         blockedRequests: blocked,
+         totalRequests:total,
+         allowedRequests:total - blocked,
         retryAfterTime: retryAfter,
       };
     }
 
-          await redis.hincrby(statsKey, 'allowed', 1);
-    await redis.hincrby(statsKey, 'total', 1);
+    let allowed=await redis.hincrby(statsKey, 'allowed', 1);
+    let total= await redis.hincrby(statsKey, 'total', 1);
     await redis.hincrby(globalStatsKey, 'allowed', 1);
     await redis.hincrby(globalStatsKey, 'total', 1);
     await redis.zadd(redisKey, now, `${now}`);
@@ -52,15 +59,22 @@ export async function slidingWindowAlgorithm(
     await redis.expire(redisKey, windowSize);
 
     return {
-      allowed: true,
-      tokensRemaining: limit - count - 1,
-      resetTime: now + windowSize,
+       allowed: true,
+     algorithmName: 'sliding_window',
+    tokensRemaining: limit - count - 1,
+    blockedRequests: total - allowed,
+    totalRequests: total,
+    allowedRequests: allowed,
     };
   } catch (err) {
     console.error("Sliding Window Error:", err);
     return {
       allowed: true,
-      tokensRemaining: limit,
+     algorithmName: 'sliding_window',
+    tokensRemaining: limit,
+    blockedRequests: 0,
+    totalRequests: 0,
+    allowedRequests: 0,
     };
   }
 }
