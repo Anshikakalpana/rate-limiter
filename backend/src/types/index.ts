@@ -77,22 +77,12 @@ export const ResultSchema = z.object({
   tokensRemaining: z.number().nonnegative(),
   resetTime: z.number().nonnegative().optional(),
   retryAfterTime: z.number().nonnegative().optional(),
-// result stats per key
+
   blockedRequests: z.number().nonnegative(),
   totalRequests: z.number().nonnegative(),
   allowedRequests: z.number().nonnegative(),
 });
 
-// export const ResponseSchema = z.object({
-//   activeKeys: z.number().nonnegative(),
-//   response: ResultSchema,
-
-
-//   blockedRequests: z.number().nonnegative(),
-//   totalRequests: z.number().nonnegative(),
-//   allowedRequests: z.number().nonnegative(),
-// });
-
 export type Request = z.infer<typeof RequestSchema>;
 export type Result = z.infer<typeof ResultSchema>;
-// export type Response = z.infer<typeof ResponseSchema>;
+

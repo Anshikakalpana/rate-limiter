@@ -19,22 +19,30 @@ export async function AllAlgorithms(req: Request, res: Response) {
     ] = await Promise.all([
       fixedWindowAlgorithm(key, body.limit, body.windowSize),
       slidingWindowAlgorithm(key, body.limit, body.windowSize),
-      tokenBucketAlgorithm(key, body.limit, body.refillRatePerSecond, body.tokensRequested),
-      leakyBucketAlgorithm(key, body.limit, body.leakRatePerSecond, body.tokensRequested)
+      tokenBucketAlgorithm(
+        key,
+        body.limit,
+        body.refillRatePerSecond,
+        body.tokensRequested
+      ),
+      leakyBucketAlgorithm(
+        key,
+        body.limit,
+        body.leakRatePerSecond,
+        body.tokensRequested
+      )
     ]);
 
-
     const comparison = {
-      activeKeys: 1,  
+      activeKeys: 1,
 
       response: {
         fixedWindow: fixedWindowResult,
         slidingWindow: slidingWindowResult,
         tokenBucket: tokenBucketResult,
-        leakyBucket: leakyBucketResult,
+        leakyBucket: leakyBucketResult
       },
 
-    
       blockedRequests:
         fixedWindowResult.blockedRequests +
         slidingWindowResult.blockedRequests +
@@ -51,11 +59,10 @@ export async function AllAlgorithms(req: Request, res: Response) {
         fixedWindowResult.totalRequests +
         slidingWindowResult.totalRequests +
         tokenBucketResult.totalRequests +
-        leakyBucketResult.totalRequests,
+        leakyBucketResult.totalRequests
     };
 
     return res.status(200).json(comparison);
-
   } catch (err) {
     console.error("AllAlgorithms error:", err);
     return res.status(500).json({ error: "Internal Server Error" });

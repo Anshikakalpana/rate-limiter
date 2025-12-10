@@ -25,13 +25,12 @@ if count >= limit then
         limit - count,                 
         windowStart + windowSize - currentTime,
         windowStart + windowSize,           
-        blocked,                            
+        blocked,                        
         total,                              
         total - blocked                   
     }
 end
 
--- ALLOWED CASE
 redis.call("INCR", redisKey)
 redis.call("EXPIRE", redisKey, windowSize)
 
