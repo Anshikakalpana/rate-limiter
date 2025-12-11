@@ -71,12 +71,3 @@ return {
     allowed
       
 }
-    --   allowed: true,
-    --   algorithmName: "fixed_window",
-
-    --   tokensRemaining: limit - (count + 1),
-    --   resetTime: windowStartTime + windowSize,
-
-    --   blockedRequests: total - allowed,
-    --   totalRequests: total,
-    --   allowedRequests: allowed,
