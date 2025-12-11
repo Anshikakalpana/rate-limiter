@@ -18,7 +18,7 @@ export async function AllAlgorithms(req: Request, res: Response) {
       leakyBucketResult
     ] = await Promise.all([
       fixedWindowAlgorithm(key, body.limit, body.windowSize),
-      slidingWindowAlgorithm(key, body.limit, body.windowSize),
+      slidingWindowAlgorithm(key, body.limit, body.windowSize , body.tokensRequested),
       tokenBucketAlgorithm(
         key,
         body.limit,

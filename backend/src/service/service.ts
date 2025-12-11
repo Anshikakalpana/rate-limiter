@@ -33,8 +33,8 @@ export async function fixedwindowalgo(req: Request, res: Response) {
 
 export async function slidingWindowAlgo(req:Request , res:Response){
   try{
- const { key , limit , windowSize } = req.body as CustomRequest;
-   const result = await slidingWindowAlgorithm(key,  limit, windowSize);
+ const { key , limit , windowSize, tokensRequested } = req.body as CustomRequest;
+   const result = await slidingWindowAlgorithm(key,  limit, windowSize ,tokensRequested);
 
    
     const statusCode = result.allowed ? 200 : 429;

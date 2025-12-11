@@ -1,80 +1,97 @@
-import type { Result } from "../types/index.js";
 import { redis } from "../utils/redis.js";
+import fs from "fs";
+import path from "path";
+
+let slidingWindowSHA: string | null = null;
+let slidingWindowScript: string | null = null;
+
+async function loadSlidingWindowScript() {
+  if (!slidingWindowSHA) {
+    slidingWindowScript = fs.readFileSync(
+      path.join(process.cwd(), "src/algo-lua/slidingWindow.lua"),
+      "utf8"
+    );
+
+    slidingWindowSHA = await (redis as any).script("load", slidingWindowScript);
+
+    console.log("Sliding Window Script SHA Loaded:", slidingWindowSHA);
+  }
+  return slidingWindowSHA;
+}
 
 export async function slidingWindowAlgorithm(
   key: string,
   limit: number,
-  windowSize: number
-): Promise<Result> {
+windowSize: number,
+  tokensRequested: number
+) {
+  await loadSlidingWindowScript();
+
+  const redisKey = `sliding_window:{${key}}`;
+  const statsKey = `stats:{${key}}`;
+  const globalStatsKey = `stats:{${key}}:global`;
+
+  const now = Date.now(); 
+
   try {
-    const now = Math.floor(Date.now() / 1000);
-    const windowStart = now - windowSize;
-    const redisKey = `sliding_log:{${key}}`;
-const statsKey = `stats:{${key}}`;         
-const globalStatsKey = `stats:{global}`;   
+    const raw: any = await redis.evalsha(
+      slidingWindowSHA!,
+      3,
+      redisKey,
+      statsKey,
+      globalStatsKey,
+      limit.toString(),
+      windowSize.toString(),
+      tokensRequested.toString(),
+      now.toString()
+    );
 
+    console.log("RAW REDIS RESULT:", raw);
 
-    await redis.zremrangebyscore(redisKey, 0, windowStart);
+    const allowed = raw[0] === 1;
 
- 
-    const count = await redis.zcard(redisKey);
+    return {
+      allowed,
+      algorithmName: "sliding window",
+      tokensRemaining: raw[1],
+      retryAfterTime: raw[2],
+      resetTime: raw[3],
+      blockedRequests: raw[4],
+      totalRequests: raw[5],
+      allowedRequests: raw[6],
+    };
+  } catch (error: any) {
 
- 
-    if (count >= limit) {
+    if (error.message && error.message.includes('NOSCRIPT')) {
+      console.log('Script not found on node, using EVAL instead');
+      
+      const raw: any = await redis.eval(
+        slidingWindowScript!,
+        3,
+        redisKey,
+        statsKey,
+        globalStatsKey,
+        limit.toString(),
+        windowSize.toString(),
+        tokensRequested.toString(),
+        now.toString()
+      );
 
-      let blocked=  await redis.hincrby(statsKey, 'blocked', 1);
-     let total= await redis.hincrby(statsKey, 'total', 1);
-      await redis.hincrby(globalStatsKey, 'blocked', 1);
-      await redis.hincrby(globalStatsKey, 'total', 1);
- 
-      const oldest = await redis.zrange(redisKey, 0, 0, "WITHSCORES");
+      console.log("RAW REDIS RESULT (EVAL):", raw);
 
-      const oldestTimestamp =
-        oldest.length > 1 ? parseInt(oldest[1]) : now;
-
-      const resetTime = oldestTimestamp + windowSize;
-      const retryAfter = resetTime - now;
+      const allowed = raw[0] === 1;
 
       return {
-        allowed: false,
-           
-        algorithmName: 'sliding_window',
-         tokensRemaining: limit - count - 1,
-   
-      
-         blockedRequests: blocked,
-         totalRequests:total,
-         allowedRequests:total - blocked,
-        retryAfterTime: retryAfter,
+        allowed,
+        algorithmName: "sliding window",
+        tokensRemaining: raw[1],
+        retryAfterTime: raw[2],
+        resetTime: raw[3],
+        blockedRequests: raw[4],
+        totalRequests: raw[5],
+        allowedRequests: raw[6],
       };
     }
-
-    let allowed=await redis.hincrby(statsKey, 'allowed', 1);
-    let total= await redis.hincrby(statsKey, 'total', 1);
-    await redis.hincrby(globalStatsKey, 'allowed', 1);
-    await redis.hincrby(globalStatsKey, 'total', 1);
-    await redis.zadd(redisKey, now, `${now}`);
-
-  
-    await redis.expire(redisKey, windowSize);
-
-    return {
-       allowed: true,
-     algorithmName: 'sliding_window',
-    tokensRemaining: limit - count - 1,
-    blockedRequests: total - allowed,
-    totalRequests: total,
-    allowedRequests: allowed,
-    };
-  } catch (err) {
-    console.error("Sliding Window Error:", err);
-    return {
-      allowed: true,
-     algorithmName: 'sliding_window',
-    tokensRemaining: limit,
-    blockedRequests: 0,
-    totalRequests: 0,
-    allowedRequests: 0,
-    };
+    throw error;
   }
 }
