@@ -61,7 +61,7 @@ export async function leakyBucketAlgorithm(
       allowedRequests: raw[6],
     };
   } catch (error: any) {
-    // If NOSCRIPT error, fall back to EVAL
+
     if (error.message && error.message.includes('NOSCRIPT')) {
       console.log('Script not found on node, using EVAL instead');
       

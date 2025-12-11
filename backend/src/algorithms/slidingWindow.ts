@@ -10,8 +10,8 @@ export async function slidingWindowAlgorithm(
     const now = Math.floor(Date.now() / 1000);
     const windowStart = now - windowSize;
     const redisKey = `sliding_log:{${key}}`;
-const statsKey = `stats:{${key}}`;          // per-user stats
-const globalStatsKey = `stats:{global}`;   // global stats
+const statsKey = `stats:{${key}}`;         
+const globalStatsKey = `stats:{global}`;   
 
 
     await redis.zremrangebyscore(redisKey, 0, windowStart);
@@ -41,7 +41,7 @@ const globalStatsKey = `stats:{global}`;   // global stats
         algorithmName: 'sliding_window',
          tokensRemaining: limit - count - 1,
    
-       // result stats per key
+      
          blockedRequests: blocked,
          totalRequests:total,
          allowedRequests:total - blocked,

@@ -41,7 +41,7 @@ if totalTokensRequired > capacity then
     return {
         0,
         capacity - count,
-        retryAfterMs,
+        (retryAfterMs) / 1000,
         currentTime + retryAfterMs,
         tonumber(blocked),
         tonumber(total),
