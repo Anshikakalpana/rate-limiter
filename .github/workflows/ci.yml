@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
 
-
+# Set defaults to backend folder for npm commands
 defaults:
   run:
     working-directory: ./backend
@@ -16,24 +16,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-     
+    
       - name: Checkout repository
         uses: actions/checkout@v3
 
-    
+  
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
- 
+    
       - name: Install dependencies
         run: npm install
 
+   
       - name: Build TypeScript
         run: npm run build
 
-  
       - name: Build Docker image
         run: docker build -t my-api:${{ github.sha }} ./backend
 
+      - name: Build and run Docker Compose
+        run: docker-compose -f ./docker-compose.yml up --build -d
