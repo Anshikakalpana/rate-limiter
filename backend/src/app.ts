@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import limiterRoutes from './routes/limiter.js';
-
+import type { Request, Response } from 'express';
 const app = express();
 
 
@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use('/api/limiter', limiterRoutes);
 
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ 
     status: 'OK', 
     timestamp: Date.now() 
@@ -19,10 +19,6 @@ app.get('/health', (req, res) => {
 });
 
 
-app.use((req, res) => {
-  res.status(404).json({ 
-    error: 'Route not found' 
-  });
-});
+
 
 export default app;

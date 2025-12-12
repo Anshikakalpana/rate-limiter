@@ -9,65 +9,75 @@ local leakRatePerSec = tonumber(ARGV[2])
 local tokenRequested = tonumber(ARGV[3])
 local currentTime = tonumber(ARGV[4])
 
-local lastLeakTimeKey = redisKey .. ":last_leak_time"
+local lastLeakKey = redisKey .. ":last_leak_time"
+local lastLeakTime = tonumber(redis.call("GET", lastLeakKey)) or currentTime
 
-local count = tonumber(redis.call("GET", redisKey)) or 0
-local lastLeakTime = tonumber(redis.call("GET", lastLeakTimeKey)) or currentTime
+local tokensKey = redisKey
+local currentTokens = tonumber(redis.call("GET", tokensKey)) or 0
 
-local elapsed = currentTime - lastLeakTime
-local tokensToLeak = math.floor((elapsed * leakRatePerSec) / 1000)
+-- Compute elapsed time in seconds
+local elapsedSec = (currentTime - lastLeakTime) / 1000
+local tokensToLeak = math.floor(elapsedSec * leakRatePerSec)
 
+-- Leak tokens
 if tokensToLeak > 0 then
-    count = math.max(0, count - tokensToLeak)
-    redis.call("SET", lastLeakTimeKey, currentTime)
-    redis.call("EXPIRE", lastLeakTimeKey, 3600)
+    currentTokens = math.max(0, currentTokens - tokensToLeak)
+    redis.call("SET", tokensKey, currentTokens)
+    redis.call("SET", lastLeakKey, currentTime)
+    redis.call("EXPIRE", tokensKey, 3600)
+    redis.call("EXPIRE", lastLeakKey, 3600)
 end
 
-local totalTokensRequired = count + tokenRequested
-
-if totalTokensRequired > capacity then
-   
-    local retryAfterMs = math.ceil(((tokenRequested + count - capacity) * 1000) / leakRatePerSec)
+-- Can we allow request?
+if currentTokens + tokenRequested > capacity then
+    local tokensNeeded = (currentTokens + tokenRequested) - capacity
+    local retryAfterMs = math.ceil((tokensNeeded / leakRatePerSec) * 1000)
     
     redis.call("HINCRBY", statsKey, "blocked", 1)
     redis.call("HINCRBY", statsKey, "total", 1)
     redis.call("HINCRBY", globalStats, "blocked", 1)
     redis.call("HINCRBY", globalStats, "total", 1)
     redis.call("EXPIRE", statsKey, 86400)
-    
-    local blocked = redis.call("HGET", statsKey, "blocked")
-    local total = redis.call("HGET", statsKey, "total")
-    
+    redis.call("EXPIRE", globalStats, 86400)
+
+    local blocked = tonumber(redis.call("HGET", statsKey, "blocked")) or 0
+    local total = tonumber(redis.call("HGET", statsKey, "total")) or 0
+    local allowed = total - blocked
+
     return {
-        0,
-        capacity - count,
-        (retryAfterMs) / 1000,
-        currentTime + retryAfterMs,
-        tonumber(blocked),
-        tonumber(total),
-        tonumber(total) - tonumber(blocked)
+        0,                                     
+        math.max(0, capacity - currentTokens),
+        retryAfterMs / 1000,                 
+        currentTime + retryAfterMs,            
+        blocked,
+        total,
+        allowed
     }
 end
 
-count = count + tokenRequested
-redis.call("SET", redisKey, count)
-redis.call("EXPIRE", redisKey, 3600)
+-- Accept request
+currentTokens = currentTokens + tokenRequested
+redis.call("SET", tokensKey, currentTokens)
+redis.call("EXPIRE", tokensKey, 3600)
 
+-- Update stats
 redis.call("HINCRBY", statsKey, "allowed", 1)
 redis.call("HINCRBY", statsKey, "total", 1)
-redis.call("EXPIRE", statsKey, 86400)
 redis.call("HINCRBY", globalStats, "allowed", 1)
 redis.call("HINCRBY", globalStats, "total", 1)
+redis.call("EXPIRE", statsKey, 86400)
+redis.call("EXPIRE", globalStats, 86400)
 
-local allowed = redis.call("HGET", statsKey, "allowed")
-local total = redis.call("HGET", statsKey, "total")
+local allowed = tonumber(redis.call("HGET", statsKey, "allowed")) or 0
+local total = tonumber(redis.call("HGET", statsKey, "total")) or 0
+local blocked = total - allowed
 
 return {
-    1,
-    capacity - count,
-    0,
+    1,                                   
+    math.max(0, capacity - currentTokens), 
+    0,                                  
     currentTime,
-    tonumber(total) - tonumber(allowed),
-    tonumber(total),
-    tonumber(allowed)
+    blocked,
+    total,
+    allowed
 }

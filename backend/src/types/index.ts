@@ -50,11 +50,11 @@ import {z} from 'zod';
 export const RequestSchema = z.object({
   key: z.string().min(1).max(100),
 
-  // base settings
+
   limit: z.number().positive(),
   windowSize: z.number().positive().default(60),
-
-  // select algorithm
+  now: z.number().default(Date.now()),
+ 
   algorithm: z.enum([
     "fixed_window",
     "sliding_window",
@@ -62,12 +62,11 @@ export const RequestSchema = z.object({
     "leaky_bucket"
   ]).default("token_bucket"),
 
-  // token bucket fields
+
   refillRatePerSecond: z.number().positive().default(1),
   tokensRequested: z.number().positive().default(1),
   capacity: z.number().positive().default(60),
 
-  // leaky bucket
   leakRatePerSecond: z.number().positive().default(1),
 });
 

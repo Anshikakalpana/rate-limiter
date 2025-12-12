@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import type { Request as CustomRequest } from "../types/index.js";
 
-import { fixedWindowAlgorithm } from "../algorithms/fixedWindow.js";
-import { slidingWindowAlgorithm } from "../algorithms/slidingWindow.js";
-import { tokenBucketAlgorithm } from "../algorithms/tokenBucket.js";
-import { leakyBucketAlgorithm } from "../algorithms/leakyBucket.js";
+import { fixedWindowAlgorithm } from "../algo-controller/fixedWindow.js";
+import { slidingWindowAlgorithm } from "../algo-controller/slidingWindow.js";
+import { tokenBucketAlgorithm } from "../algo-controller/tokenBucket.js";
+import { leakyBucketAlgorithm } from "../algo-controller/leakyBucket.js";
 
 export async function AllAlgorithms(req: Request, res: Response) {
   try {
@@ -18,7 +18,7 @@ export async function AllAlgorithms(req: Request, res: Response) {
       leakyBucketResult
     ] = await Promise.all([
       fixedWindowAlgorithm(key, body.limit, body.windowSize),
-      slidingWindowAlgorithm(key, body.limit, body.windowSize , body.tokensRequested),
+      slidingWindowAlgorithm(key, body.limit, body.windowSize , body.tokensRequested ),
       tokenBucketAlgorithm(
         key,
         body.limit,
@@ -29,7 +29,8 @@ export async function AllAlgorithms(req: Request, res: Response) {
         key,
         body.limit,
         body.leakRatePerSecond,
-        body.tokensRequested
+        body.tokensRequested,
+        body.now
       )
     ]);
 

@@ -11,8 +11,8 @@ export async function fixedWindowAlgorithm(
     const windowStartTime = Math.floor(currentTime / windowSize) * windowSize;
 
     const redisKey = `fixed_window:{${key}}:${windowStartTime}`;
-   const statsKey = `stats:{${key}}`;          // per-user stats
-const globalStatsKey = `stats:{global}`;   // global stats
+   const statsKey = `stats:{${key}}`;          
+const globalStatsKey = `stats:{global}`;   
 
 
     const currentCount = await redis.get(redisKey);
