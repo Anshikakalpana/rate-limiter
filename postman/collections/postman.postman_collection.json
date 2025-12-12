@@ -1,0 +1,324 @@
+{
+  "info": {
+    "_postman_id": "c7ffe441-ff32-45db-9a0c-d9d163940056",
+    "name": "postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "fetching useer data",
+      "id": "4995acc3-eee3-4e78-a1ac-b97a0b5de3b7",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": [
+        {
+          "id": "1e93b58d-f139-4e9e-9892-c9485f156ba0",
+          "name": "New Request",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "postman-cloud:///1f05514b-a8c5-4030-bb99-104693828056"
+                },
+                {
+                  "key": "title",
+                  "value": "abc",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "xyz",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "tech",
+                  "type": "text"
+                }
+              ],
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/login/Newpost",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "login",
+                "Newpost"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "47"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"2f-bZ9DiNh2mI4k8s38nDGho1OMFOs\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 29 Jun 2025 18:13:39 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"success\": false,\n    \"message\": \"Missing post data\"\n}"
+        },
+        {
+          "id": "930474ff-238c-42fb-a26e-9c9147216e85",
+          "name": "New Request",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [],
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/login/findpost/6863badff9dbafcb74109a41",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "login",
+                "findpost",
+                "6863badff9dbafcb74109a41"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 01 Jul 2025 11:50:13 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            },
+            {
+              "key": "Content-Length",
+              "value": "0"
+            }
+          ],
+          "cookie": [],
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "http://localhost:3000/newpost",
+      "id": "6254dfc8-3111-4e6c-8ca4-aba1c18afc0d",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "postman-cloud:///1f059d12-aed7-4f50-8ed7-9cac3be53130"
+            },
+            {
+              "key": "description",
+              "value": "aa",
+              "type": "text"
+            },
+            {
+              "key": "title",
+              "value": "aa",
+              "type": "text"
+            },
+            {
+              "key": "category",
+              "value": "aa",
+              "type": "text"
+            },
+            {
+              "key": "postby",
+              "value": "ans",
+              "type": "text"
+            },
+            {
+              "key": "userid",
+              "value": "aa",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:3000/newpost",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "newpost"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3000/findpost/6863badff9dbafcb74109a41",
+      "id": "dae7c881-f288-4932-b1d9-f6513c4fc91a",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "http://localhost:3000/findpost/6863badff9dbafcb74109a41",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "findpost",
+            "6863badff9dbafcb74109a41"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login api",
+      "id": "78de92d3-bcec-4907-961e-2b27a8071823",
+      "request": {
+        "auth": {
+          "type": "bearer"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \r\n    \"email\": \"userr\",\r\n    \"password\":\"user\"\r\n    \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/user/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "user",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3000/api/user/login",
+      "id": "af5deb4a-d912-4720-a008-c38a995d4f1e",
+      "request": {
+        "auth": {
+          "type": "bearer"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n \r\n    \"email\":\"an@gmail.com\",\r\n    \"password\":\"an\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/user/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "user",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

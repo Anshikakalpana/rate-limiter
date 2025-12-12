@@ -1,0 +1,215 @@
+{
+  "info": {
+    "_postman_id": "a44a48bb-a816-4cd2-89a1-9dd02e5daca0",
+    "name": "ecommerce",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "server-check",
+      "id": "a62c581c-8440-4733-9683-5b4944677fb2",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "register seller",
+      "id": "5af3c128-8b2e-4e3b-ad34-f16d72d1bce7",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "register buyer",
+      "id": "e50eeeee-f6ac-40ae-bed4-5d937a3e8662",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "login buyer",
+      "id": "a8a18323-8f50-4aac-92c7-1cdcd7854afa",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "buyer trying to add product",
+      "id": "d297a1b2-574d-4247-b81f-593d217928a4",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "seller adding product",
+      "id": "50e81187-2695-48d4-bab8-286d73d80566",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"brand\": \"GlowCare\",\r\n  \"name\": \"Vitamin  Face Serum\",\r\n  \"slug\": \"vitamin-c face-serum\",\r\n  \"price\": 999,\r\n  \"finalPrice\": 799,\r\n  \"description\": \"A lightweight Vitamin C serum that brightens skin, reduces dark spots, and improves texture. Suitable for all skin types.\",\r\n  \"category\": \"Skincare\",\r\n  \"imageUrl\": [\r\n    \"https://example.com/images/products/vitamin-c-serum-1.jpg\",\r\n    \"https://example.com/images/products/vitamin-c-serum-2.jpg\"\r\n  ],\r\n  \"tags\": [\"serum\", \"vitamin-c\", \"brightening\", \"skincare\"],\r\n  \"inStock\": true,\r\n  \"totalReviews\": 245,\r\n  \"averageRating\": 4.6,\r\n  \"comments\": [\r\n    {\r\n      \"userid\": \"user_101\",\r\n      \"rating\": 5,\r\n      \"comment\": \"Amazing product! My skin feels fresh and brighter after a week of use.\",\r\n      \"date\": \"2025-10-15T10:00:00.000Z\",\r\n      \"images\": [\"https://example.com/reviews/rev1.jpg\"]\r\n    },\r\n    {\r\n      \"userid\": \"user_102\",\r\n      \"rating\": 4,\r\n      \"comment\": \"Good serum, absorbs quickly. Slightly expensive though.\",\r\n      \"date\": \"2025-10-18T14:25:00.000Z\"\r\n    }\r\n  ],\r\n  \"ingredients\": [\r\n    \"Vitamin C (Ascorbic Acid)\",\r\n    \"Hyaluronic Acid\",\r\n    \"Aloe Vera Extract\",\r\n    \"Niacinamide\"\r\n  ],\r\n  \"sku\": \"GC-SERUM-VC-30ML\",\r\n  \"isFeatured\": true,\r\n  \"isNewArrival\": false,\r\n  \"status\": \"active\",\r\n  \"createdAt\": \"2025-09-25T09:00:00.000Z\",\r\n  \"updatedAt\": \"2025-11-01T16:45:00.000Z\",\r\n  \"sellerId\": \"seller_203\",\r\n  \"returnPolicy\": \"Return within 7 days of delivery if unopened.\",\r\n  \"warranty\": \"No warranty applicable for cosmetic products.\",\r\n  \"shippingInfo\": \"Ships within 2 business days via standard delivery.\",\r\n  \"shelfLife\": \"24 months\",\r\n  \"skinType\": [\"normal\", \"oily\", \"dry\", \"combination\"],\r\n  \"netQuantity\": \"30ml\",\r\n  \"originCountry\": \"India\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/products/createproduct",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "products",
+            "createproduct"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "adding product to cart",
+      "id": "447b8ff9-ca86-4c88-b6f1-f68a5cf64f9a",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/cartitems/proforcar/691212f3356fa4001c4ff77d",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "cartitems",
+            "proforcar",
+            "691212f3356fa4001c4ff77d"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "rate-limiting",
+      "id": "5088ddb3-bb86-4996-a91c-fb3f585b8173",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"email\": \"rohit.sharma@example.com\",\r\n  \"password\": \"$2b$10$hashedPsswordHere\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/users/login/email",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "users",
+            "login",
+            "email"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getting cart of user",
+      "id": "8b2c9f26-6fbb-4db6-95e4-aa4f45653752",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"email\": \"rohit.sharma@example.com\",\r\n  \"password\": \"$2b$10$hashedPasswordHere\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/cartitems/getcart",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "cartitems",
+            "getcart"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleting product from cart",
+      "id": "18c54e46-0da6-4894-a365-9764bf7484c5",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/cartitems/deleteprofromcart/69121600afac68284bc2d070",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "cartitems",
+            "deleteprofromcart",
+            "69121600afac68284bc2d070"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

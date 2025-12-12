@@ -1,0 +1,54 @@
+{
+  "info": {
+    "_postman_id": "68cab1fa-9760-4eb3-b7d8-d537d02ffb0a",
+    "name": "chat-app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth/logout",
+      "id": "2bb23173-7c27-4fac-a3a2-32f4e3dcbd9a",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "/auth/login/email",
+      "id": "562d6ea3-dc0d-48a6-8037-3f277da2be66",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "b6a0af71-e49c-47df-9096-7bad7b88fa1f",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "register",
+      "id": "7e44a76f-9e3c-49dd-a934-38a49dd7c1c5",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "messages/getcontacts",
+      "id": "236c115c-673c-44bf-a067-1380c537d2fa",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "info": {
+    "_postman_id": "0bb2d6fa-8ca0-4271-aac6-4012fc4d8d95",
+    "name": "rate-limiter",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "fixed-window",
+      "id": "3f9f0f64-85b8-4a14-9c01-63a56fb7449c",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"key\":\"test-user\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/limiter/test",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "limiter",
+            "test"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "token-bucket",
+      "id": "3208db54-66eb-4ba2-9bd2-96ea19518ff4",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "leaky-bucket",
+      "id": "1e3f6356-89d0-4834-9ca8-7a0e944049b3",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "sliding window",
+      "id": "9d097d1e-7afd-455b-bbdf-a5bb3de4709e",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "all algorithms",
+      "id": "9759a6c4-bdcc-4c27-8f25-2e0b3748bfae",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"key\": \"user_123\",\r\n  \"limit\": 10,\r\n  \"windowSize\": 60,\r\n\r\n  \"refillRatePerSecond\": 5,\r\n  \"tokensRequested\": 1,\r\n\r\n  \"leakRatePerSecond\": 2\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/limiter/all",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "limiter",
+            "all"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
