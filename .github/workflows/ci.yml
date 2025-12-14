@@ -25,7 +25,7 @@ jobs:
 
       - name: Test
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 30
           curl http://localhost:3000/health
-          docker-compose down
+          docker compose down
