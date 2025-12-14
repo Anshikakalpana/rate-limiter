@@ -41,7 +41,7 @@ jobs:
 
       - name: Check API health
         run: |
-          curl -f http://localhost:3000/health || (echo "❌ Health check failed!" && docker-compose logs ratelimiterapi && exit 1)
+          curl -f http://localhost:3000/health || (echo " Health check failed!" && docker-compose logs ratelimiterapi && exit 1)
 
       - name: Verify health response
         run: |
