@@ -23,7 +23,13 @@ jobs:
           npm install
           npm run build
 
-      - name: Test
+      - name: Create env file
+        working-directory: ./backend
+        run: |
+          echo "REDIS_CLUSTER_NODES=redis-node-1:6379,redis-node-2:6379,redis-node-3:6379" >> .env
+          echo "PORT=3000" >> .env
+
+      - name: Start and test
         run: |
           docker compose up -d
           sleep 30
