@@ -21,34 +21,26 @@ end
 local currentTokens = tonumber(redis.call("GET", redisKey)) or limit
 
 
-local elapsed = currentTime - lastRefillTime
-local tokensToAdd = math.floor(elapsed * refillRatePerSec)
+local elapsedSec = (currentTime - lastRefillTime) / 1000
+local tokensToAdd = math.floor(elapsedSec * refillRatePerSec)
 currentTokens = math.min(limit, currentTokens + tokensToAdd)
-
-
-redis.call("SET", lastRefillKey, currentTime)
-
+if tokensToAdd > 0 then
+  redis.call("SET", lastRefillKey, currentTime)
+end
 
 if tokenRequested > currentTokens then
-    local blocked = redis.call("HINCRBY", statsKey, "blocked", 1)
-    local total = redis.call("HINCRBY", statsKey, "total", 1)
-
-    redis.call("HINCRBY", globalStats, "blocked", 1)
-    redis.call("HINCRBY", globalStats, "total", 1)
-
- 
-    local retryAfter = math.ceil((tokenRequested - currentTokens) / refillRatePerSec)
-
+    local retryAfterMs = math.ceil((tokenRequested - currentTokens) / refillRatePerSec * 1000)
     return {
-        0,                                 
-        currentTokens,                 
-        retryAfter,                     
-        currentTime + retryAfter,        
-        blocked,                        
-        total,                              
-        total - blocked      
+        0,
+        currentTokens,
+        retryAfterMs,
+        currentTime + retryAfterMs,
+        blocked,
+        total,
+        total - blocked
     }
 end
+
 
 
 currentTokens = currentTokens - tokenRequested

@@ -105,6 +105,18 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "health check",
+      "id": "1c0d70a4-41b0-415b-a454-2f20eaad915c",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
     }
   ]
 }

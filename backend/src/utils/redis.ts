@@ -15,11 +15,11 @@ export const redis = new Redis.Cluster([
 });
 
 
-redis.on("connect", () => {
+redis.once("connect", () => {
   console.log(" Redis Cluster connected");
 });
 
-redis.on("error", (err) => {
+redis.once("error", (err) => {
   console.error(" Redis Cluster error:", err);
 });
 
