@@ -1,8 +1,33 @@
 {
   "info": {
-    "_postman_id": "09c1580a-e498-4bc3-8eb1-69cdb91d38a7",
-    "name": "New Collection",
+    "_postman_id": "a6a1204e-2383-4a6d-a4fc-e2da2dfec7a3",
+    "name": "job-scheduler",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "item": []
+  "item": [
+    {
+      "name": "health-check",
+      "id": "8b5d9338-8e59-4ba3-9354-e09b55618139",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "33b35cb3-ecae-47ac-987b-dfbe32754769",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
 }
